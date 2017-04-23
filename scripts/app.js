@@ -21,7 +21,6 @@ APP.Main = (function() {
 
   var stories = null;
   var storyStart = 0;
-  var count = 100;
   var main = $('main');
   var inDetails = false;
   var storyLoadCount = 0;
