@@ -66,6 +66,8 @@ APP.Main = (function() {
     // directly rather than looping through all of them.
     var storyElements = document.querySelectorAll('.story');
 
+    console.log(key + " is the key and the details is " + details);
+
     for (var i = 0; i < storyElements.length; i++) {
 
       if (storyElements[i].getAttribute('id') === 's-' + key) {
