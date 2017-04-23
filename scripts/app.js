@@ -285,8 +285,6 @@ APP.Main = (function() {
     }
   }
 
-
-
   main.addEventListener('scroll', function() {
 
     var header = $('header');
@@ -317,10 +315,12 @@ APP.Main = (function() {
 
     if (storyLoadCount > 0)
       return;
+// The initial count var is 100. Do we really need two variables?
+// same with storySTart which is 0.
 
-    storyLoadCount = count;
+    storyLoadCount = 100;
 
-    var end = storyStart + count;
+    var end = storyStart + 100;
     for (var i = storyStart; i < end; i++) {
 
       if (i >= stories.length)
@@ -341,7 +341,10 @@ APP.Main = (function() {
       APP.Data.getStoryById(stories[i], onStoryData.bind(this, key));
     }
 
-    storyStart += count;
+// all this does is add 100 to the StoryStart var. This is needlessly complicated.
+// Could just replace all instances of 100 with 100 and StoryStart with 0.
+// But also, is there any need for it?
+    storyStart += 100;
 
   }
 
