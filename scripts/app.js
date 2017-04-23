@@ -64,14 +64,9 @@ APP.Main = (function() {
 
     // This seems odd. Surely we could just select the story
     // directly rather than looping through all of them.
-    var storyElements = document.querySelectorAll('.story');
-
-    for (var i = 0; i < storyElements.length; i++) {
-
-      if (storyElements[i].getAttribute('id') === 's-' + key) {
 
         details.time *= 1000;
-        var story = storyElements[i];
+        var story = document.getElementById('s--' + key);
         var html = storyTemplate(details);
         story.innerHTML = html;
         story.addEventListener('click', onStoryClick.bind(this, details));
@@ -315,8 +310,6 @@ APP.Main = (function() {
 
     if (storyLoadCount > 0)
       return;
-// The initial count var is 100. Do we really need two variables?
-// same with storySTart which is 0.
 
     storyLoadCount = 100;
 
@@ -340,9 +333,6 @@ APP.Main = (function() {
       APP.Data.getStoryById(stories[i], onStoryData.bind(this, key));
     }
 
-// all this does is add 100 to the StoryStart var. This is needlessly complicated.
-// Could just replace all instances of 100 with 100 and StoryStart with 0.
-// But also, is there any need for it?
     storyStart += 100;
 
   }
