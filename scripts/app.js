@@ -311,6 +311,7 @@ APP.Main = (function() {
   });
 
   function loadStoryBatch() {
+//storyLoadCount is used a few other places
 
     if (storyLoadCount > 0)
       return;
@@ -319,8 +320,7 @@ APP.Main = (function() {
 
     storyLoadCount = 100;
 
-    var end = storyStart + 100;
-    for (var i = storyStart; i < end; i++) {
+    for (var i = storyStart; i < (storyStart + 100); i++) {
 
       if (i >= stories.length)
         return;
