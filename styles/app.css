@@ -119,6 +119,15 @@ main {
   z-index: 0;
 }
 
+.overlay {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background: linear-gradient(to bottom, rgba(f,f,f,0), rgba(f,f,f,1));
+  background: webkit-linear-gradient(  );
+  transform: translateZ(1px);
+}
+
 main.loading {
   background: url(../images/loader.png) center center no-repeat;
   background-size: 24px 24px;

@@ -62,6 +62,11 @@ APP.Main = (function() {
    */
   function onStoryData (key, details) {
 
+    // I'm not sure how it's getting the details variable.
+    // it seems only to be passing the "this" value (thru the bind() operation)
+    // and the key. and yet when i do console.log , we do have a value
+    // for both arguments. not sure why.
+
     // This seems odd. Surely we could just select the story
     // directly rather than looping through all of them.
     var storyElements = document.querySelectorAll('.story');
@@ -85,9 +90,9 @@ APP.Main = (function() {
       }
     }
 
-    // Colorize on complete.
-    if (storyLoadCount === 0)
-      colorizeAndScaleStories();
+    // Colorize on complete. - ommenting out
+   //if (storyLoadCount === 0)
+     // colorizeAndScaleStories();
   }
 
   function onStoryClick(details) {
@@ -181,6 +186,8 @@ APP.Main = (function() {
     function animate () {
 
       // Find out where it currently is.
+
+      // well, i tnink this is forcing layout....
       var storyDetailsPosition = storyDetails.getBoundingClientRect();
 
       // Set the left value if we don't have one already.
@@ -198,6 +205,9 @@ APP.Main = (function() {
 
       // And update the styles. Wait, is this a read-write cycle?
       // I hope I don't trigger a forced synchronous layout!
+      // yup you are becuase we first read the layout values, then set the left value
+      // based on that, whihh will then erquire re-calculating of styles,
+      // which then reuiers more layout
       storyDetails.style.left = left + 'px';
     }
 
@@ -218,7 +228,8 @@ APP.Main = (function() {
 
     document.body.classList.remove('details-active');
     storyDetails.style.opacity = 0;
-
+// ths appears to be the same function written twice. So we should define it once
+// outside the parent scope
     function animate () {
 
       // Find out where it currently is.
@@ -253,6 +264,9 @@ APP.Main = (function() {
    * Does this really add anything? Can we do this kind
    * of work in a cheaper way?
    */
+  // commenting out so I can work on replacing it with a
+   // div that has a gradient
+/*
   function colorizeAndScaleStories() {
 
     var storyElements = document.querySelectorAll('.story');
@@ -266,25 +280,41 @@ APP.Main = (function() {
       var title = story.querySelector('.story__title');
 
       // Base the scale on the y position of the score.
-      var height = main.offsetHeight;
+      // this only does anything when you scroll super fast.
+      // reading the boundingclientrect like this to alter the styles
+      // is causing a read-write cycle. we need to figure out how to change the style
+      // without resorting to reading the layout.
+      // maybe there is a way to do the first child, seond child, third child?
+      // but how do you change which gets that style as scrolling happens?
+      // could you just put all the stories on their own layers? and then
+      // as they overlap the place on the screen that we'd call "first position" then
+      // their styles would change?
+      // hmm. no i don't think so becuase composite layers is the LAST part of the pipelin
+      // BUT if you had a layer at the bottom of the screen that caused the bottom stories
+      // to be greyed out, or maybe whited out that would work. YES! That's the asnwer.
+      // it has to be its own layer on top of everything else. it can be the size of teh whole
+      // window, it can be white or gray, and opacity would increase as you go down. hm.
+      // is that complicated to have opacity increase as you go down?
+      //
+/*      var height = main.offsetHeight;
       var mainPosition = main.getBoundingClientRect();
       var scoreLocation = score.getBoundingClientRect().top -
           document.body.getBoundingClientRect().top;
-      var scale = Math.min(1, 1 - (0.05 * ((scoreLocation - 170) / height)));
-      var opacity = Math.min(1, 1 - (0.5 * ((scoreLocation - 170) / height)));
+      var scale = Math.min(1, 1 - (0.05 * ((scoreLocation - 170) / height)));*/
+     // var opacity = Math.min(1, 1 - (0.5 * ((scoreLocation - 170) / height)));
 
-      score.style.width = (scale * 40) + 'px';
+     /* score.style.width = (scale * 40) + 'px';
       score.style.height = (scale * 40) + 'px';
-      score.style.lineHeight = (scale * 40) + 'px';
+      score.style.lineHeight = (scale * 40) + 'px';*/
 
       // Now figure out how wide it is and use that to saturate it.
-      scoreLocation = score.getBoundingClientRect();
+/*      scoreLocation = score.getBoundingClientRect();
       var saturation = (100 * ((scoreLocation.width - 38) / 2));
 
       score.style.backgroundColor = 'hsl(42, ' + saturation + '%, 50%)';
       title.style.opacity = opacity;
     }
-  }
+  }*/
 
   main.addEventListener('scroll', function() {
 
@@ -293,7 +323,7 @@ APP.Main = (function() {
     var scrollTopCapped = Math.min(70, main.scrollTop);
     var scaleString = 'scale(' + (1 - (scrollTopCapped / 300)) + ')';
 
-    colorizeAndScaleStories();
+//    colorizeAndScaleStories();
 
     header.style.height = (156 - scrollTopCapped) + 'px';
     headerTitles.style.webkitTransform = scaleString;
@@ -313,12 +343,19 @@ APP.Main = (function() {
   });
 
   function loadStoryBatch() {
-//storyLoadCount is used a few other places
 
     if (storyLoadCount > 0)
       return;
-// The initial count var is 100. Do we really need two variables?
-// same with storySTart which is 0.
+
+    // storyStart is being used to set the i, which is in turn used
+    // to grab the right story from the data source.
+
+    // storyLoadCount is set to 100 when we load a new batch like this,
+    // then ticked down in that loop elsewhere in the app.js. However,
+    // it's possible that we don't need to tick them like that, which
+    // would mean we could get rid of the storyLoadCount var. We might
+    // be able to just grab the stories from the data based on an index
+    // that is set more simply.
 
     storyLoadCount = 100;
 
@@ -342,9 +379,6 @@ APP.Main = (function() {
       APP.Data.getStoryById(stories[i], onStoryData.bind(this, key));
     }
 
-// all this does is add 100 to the StoryStart var. This is needlessly complicated.
-// Could just replace all instances of 100 with 100 and StoryStart with 0.
-// But also, is there any need for it?
     storyStart += 100;
 
   }
