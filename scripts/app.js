@@ -260,62 +260,6 @@ APP.Main = (function() {
     setTimeout(animate, 4);
   }
 
-  /**
-   * Does this really add anything? Can we do this kind
-   * of work in a cheaper way?
-   */
-  // commenting out so I can work on replacing it with a
-   // div that has a gradient
-/*
-  function colorizeAndScaleStories() {
-
-    var storyElements = document.querySelectorAll('.story');
-
-    // It does seem awfully broad to change all the
-    // colors every time!
-    for (var s = 0; s < storyElements.length; s++) {
-
-      var story = storyElements[s];
-      var score = story.querySelector('.story__score');
-      var title = story.querySelector('.story__title');
-
-      // Base the scale on the y position of the score.
-      // this only does anything when you scroll super fast.
-      // reading the boundingclientrect like this to alter the styles
-      // is causing a read-write cycle. we need to figure out how to change the style
-      // without resorting to reading the layout.
-      // maybe there is a way to do the first child, seond child, third child?
-      // but how do you change which gets that style as scrolling happens?
-      // could you just put all the stories on their own layers? and then
-      // as they overlap the place on the screen that we'd call "first position" then
-      // their styles would change?
-      // hmm. no i don't think so becuase composite layers is the LAST part of the pipelin
-      // BUT if you had a layer at the bottom of the screen that caused the bottom stories
-      // to be greyed out, or maybe whited out that would work. YES! That's the asnwer.
-      // it has to be its own layer on top of everything else. it can be the size of teh whole
-      // window, it can be white or gray, and opacity would increase as you go down. hm.
-      // is that complicated to have opacity increase as you go down?
-      //
-/*      var height = main.offsetHeight;
-      var mainPosition = main.getBoundingClientRect();
-      var scoreLocation = score.getBoundingClientRect().top -
-          document.body.getBoundingClientRect().top;
-      var scale = Math.min(1, 1 - (0.05 * ((scoreLocation - 170) / height)));*/
-     // var opacity = Math.min(1, 1 - (0.5 * ((scoreLocation - 170) / height)));
-
-     /* score.style.width = (scale * 40) + 'px';
-      score.style.height = (scale * 40) + 'px';
-      score.style.lineHeight = (scale * 40) + 'px';*/
-
-      // Now figure out how wide it is and use that to saturate it.
-/*      scoreLocation = score.getBoundingClientRect();
-      var saturation = (100 * ((scoreLocation.width - 38) / 2));
-
-      score.style.backgroundColor = 'hsl(42, ' + saturation + '%, 50%)';
-      title.style.opacity = opacity;
-    }
-  }*/
-
   main.addEventListener('scroll', function() {
 
     var header = $('header');
