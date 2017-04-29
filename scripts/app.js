@@ -186,9 +186,10 @@ APP.Main = (function() {
     function animate () {
 
       // Find out where it currently is.
-
+      var mainPosition = main.getBoundingClientRect();
       // well, i tnink this is forcing layout....
       var storyDetailsPosition = storyDetails.getBoundingClientRect();
+      var target = mainPosition.width + 100;
 
       // Set the left value if we don't have one already.
       if (left === null)
