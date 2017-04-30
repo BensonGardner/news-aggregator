@@ -66,7 +66,7 @@ APP.Main = (function() {
     // directly rather than looping through all of them.
 
         details.time *= 1000;
-        var story = document.getElementById('s--' + key);
+        var story = document.getElementById('s-' + key);
         var html = storyTemplate(details);
         story.innerHTML = html;
         story.addEventListener('click', onStoryClick.bind(this, details));
@@ -74,13 +74,6 @@ APP.Main = (function() {
 
         // Tick down. When zero we can batch in the next load.
         storyLoadCount--;
-
-      }
-    }
-
-    // Colorize on complete.
-    if (storyLoadCount === 0)
-      colorizeAndScaleStories();
   }
 
   function onStoryClick(details) {
