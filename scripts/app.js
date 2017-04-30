@@ -69,30 +69,16 @@ APP.Main = (function() {
 
     // This seems odd. Surely we could just select the story
     // directly rather than looping through all of them.
-    var storyElements = document.querySelectorAll('.story');
 
-    console.log(key + " is the key and the details is " + details);
+    details.time *= 1000;
+    var story = document.getElementById('s-' + key);
+    var html = storyTemplate(details);
+    story.innerHTML = html;
+    story.addEventListener('click', onStoryClick.bind(this, details));
+    story.classList.add('clickable');
 
-    for (var i = 0; i < storyElements.length; i++) {
-
-      if (storyElements[i].getAttribute('id') === 's-' + key) {
-
-        details.time *= 1000;
-        var story = storyElements[i];
-        var html = storyTemplate(details);
-        story.innerHTML = html;
-        story.addEventListener('click', onStoryClick.bind(this, details));
-        story.classList.add('clickable');
-
-        // Tick down. When zero we can batch in the next load.
-        storyLoadCount--;
-
-      }
-    }
-
-    // Colorize on complete. - ommenting out
-   //if (storyLoadCount === 0)
-     // colorizeAndScaleStories();
+    // Tick down. When zero we can batch in the next load.
+    storyLoadCount--;
   }
 
   function onStoryClick(details) {
@@ -268,19 +254,19 @@ APP.Main = (function() {
     var scrollTopCapped = Math.min(70, main.scrollTop);
     var scaleString = 'scale(' + (1 - (scrollTopCapped / 300)) + ')';
 
-//    colorizeAndScaleStories();
-
     header.style.height = (156 - scrollTopCapped) + 'px';
     headerTitles.style.webkitTransform = scaleString;
     headerTitles.style.transform = scaleString;
 
     // Add a shadow to the header.
+    // this looks like a read/write cycle
     if (main.scrollTop > 70)
       document.body.classList.add('raised');
     else
       document.body.classList.remove('raised');
 
     // Check if we need to load the next batch of stories.
+    // this is a layout check - read/write cycle?
     var loadThreshold = (main.scrollHeight - main.offsetHeight -
         LAZY_LOAD_THRESHOLD);
     if (main.scrollTop > loadThreshold)
