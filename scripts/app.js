@@ -227,6 +227,7 @@ APP.Main = (function() {
 
   main.addEventListener('scroll', function() {
 
+    console.log("scrolling");
     var header = $('header');
     var headerTitles = header.querySelector('.header__title-wrapper');
     var scrollTopCapped = Math.min(70, main.scrollTop);
@@ -246,9 +247,11 @@ APP.Main = (function() {
     // Check if we need to load the next batch of stories.
     // this is a layout check - read/write cycle?
     var loadThreshold = (main.scrollHeight - main.offsetHeight -
-        LAZY_LOAD_THRESHOLD);
-    if (main.scrollTop > loadThreshold)
+        300);
+
+    if (main.scrollTop > loadThreshold) {
       loadStoryBatch();
+    }
   });
 
   function loadStoryBatch() {
