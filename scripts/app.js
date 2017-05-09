@@ -18,6 +18,7 @@ APP.Main = (function() {
 
   var LAZY_LOAD_THRESHOLD = 300;
   var $ = document.querySelector.bind(document);
+  var overlay = document.getElementById('overlay');
 
   var stories = null;
   var storyStart = 0;
@@ -225,12 +226,13 @@ APP.Main = (function() {
     setTimeout(animate, 4);
   }
 
-  main.addEventListener('scroll', function() {
+  document.addEventListener('scroll', function() {
 
-    console.log("scrolling");
+    console.log('scrolling');
     var header = $('header');
     var headerTitles = header.querySelector('.header__title-wrapper');
-    var scrollTopCapped = Math.min(70, main.scrollTop);
+    var scrollTopCapped = Math.min(70, document.scrollTop);
+    // this line is probly not doing anyhing
     var scaleString = 'scale(' + (1 - (scrollTopCapped / 300)) + ')';
 
     header.style.height = (156 - scrollTopCapped) + 'px';
@@ -239,17 +241,16 @@ APP.Main = (function() {
 
     // Add a shadow to the header.
     // this looks like a read/write cycle
-    if (main.scrollTop > 70)
+    if (document.scrollTop > 70)
       document.body.classList.add('raised');
     else
       document.body.classList.remove('raised');
 
     // Check if we need to load the next batch of stories.
     // this is a layout check - read/write cycle?
-    var loadThreshold = (main.scrollHeight - main.offsetHeight -
-        300);
+    var loadThreshold = 300;
 
-    if (main.scrollTop > loadThreshold) {
+    if (document.scrollTop > loadThreshold) {
       loadStoryBatch();
     }
   });
