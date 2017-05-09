@@ -226,12 +226,12 @@ APP.Main = (function() {
     setTimeout(animate, 4);
   }
 
-  document.addEventListener('scroll', function() {
+  main.addEventListener('scroll', function() {
 
     console.log('scrolling');
     var header = $('header');
     var headerTitles = header.querySelector('.header__title-wrapper');
-    var scrollTopCapped = Math.min(70, document.scrollTop);
+    var scrollTopCapped = Math.min(70, main.scrollTop);
     // this line is probly not doing anyhing
     var scaleString = 'scale(' + (1 - (scrollTopCapped / 300)) + ')';
 
@@ -241,16 +241,16 @@ APP.Main = (function() {
 
     // Add a shadow to the header.
     // this looks like a read/write cycle
-    if (document.scrollTop > 70)
-      document.body.classList.add('raised');
+    if (main.scrollTop > 70)
+      main.body.classList.add('raised');
     else
-      document.body.classList.remove('raised');
+      main.body.classList.remove('raised');
 
     // Check if we need to load the next batch of stories.
     // this is a layout check - read/write cycle?
-    var loadThreshold = 300;
+    var loadThreshold = (main.scrollHeight - main.offsetHeight - 300);
 
-    if (document.scrollTop > loadThreshold) {
+    if (main.scrollTop > loadThreshold) {
       loadStoryBatch();
     }
   });
