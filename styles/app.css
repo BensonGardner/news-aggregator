@@ -161,21 +161,9 @@ main.loading {
   min-height: 90px;
   cursor: pointer;
   transition: all 0.4s ease-out;
-}
-
-.story:after {
-  display: block;
-  content: '';
-  width: 100%;
-  position: absolute;
-  left: 0;
-  bottom: 0;
   border-bottom: 1px solid #dedede;
 }
 
-.story:nth-last-child(-n+1):after {
-  display: none;
-}
 
 .story__title {
   font-size: 20px;
