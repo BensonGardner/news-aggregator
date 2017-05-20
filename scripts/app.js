@@ -287,7 +287,7 @@ APP.Main = (function() {
         by: '...',
         time: 0
       });
-      main.appendChild(story);
+      overlay.appendChild(story);
 
       APP.Data.getStoryById(stories[i], onStoryData.bind(this, key));
     }

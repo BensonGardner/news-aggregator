@@ -126,7 +126,7 @@ main {
   max-height: 100%;
   overflow-y: scroll;
   position: absolute;
-  z-index: 1;
+  /*z-index: 1;*/
   will-change: transform;
   background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
   background: -moz-linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
@@ -165,7 +165,6 @@ main.loading {
   cursor: pointer;
   transition: all 0.4s ease-out;
   border-bottom: 1px solid #dedede;
-  /*will-change: transform;*/
   z-index: -1;
 }
 
