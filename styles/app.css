@@ -109,6 +109,7 @@ body.raised .header {
 }
 
 main {
+  max-height: 100%;
   padding-top: 156px;
   -webkit-flex: 1;
       -ms-flex: 1;
@@ -122,8 +123,10 @@ main {
 #overlay {
   width: 100vw;
   height: 100%;
-  position: fixed;
-/*  z-index: 1; */
+  max-height: 100%;
+  overflow-y: scroll;
+  position: absolute;
+  z-index: 1;
   will-change: transform;
   background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
   background: -moz-linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
@@ -162,6 +165,8 @@ main.loading {
   cursor: pointer;
   transition: all 0.4s ease-out;
   border-bottom: 1px solid #dedede;
+  /*will-change: transform;*/
+  z-index: -1;
 }
 
 

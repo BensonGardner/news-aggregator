@@ -253,7 +253,7 @@ APP.Main = (function() {
     if (main.scrollTop > loadThreshold) {
       loadStoryBatch();
     }
-  });
+  }, true);
 
   function loadStoryBatch() {
 
