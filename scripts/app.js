@@ -18,7 +18,6 @@ APP.Main = (function() {
 
   var LAZY_LOAD_THRESHOLD = 300;
   var $ = document.querySelector.bind(document);
-  var overlay = document.getElementById('overlay');
 
   var stories = null;
   var storyStart = 0;
@@ -75,18 +74,20 @@ APP.Main = (function() {
     var story = document.getElementById('s-' + key);
     var html = storyTemplate(details);
     story.innerHTML = html;
-    story.addEventListener('click', onStoryClick.bind(this, details));
-    story.classList.add('clickable');
+    story.addEventListener('click', onStoryClick.bind(this, details), true);
+   // story.classList.add('clickable');
 
     // Tick down. When zero we can batch in the next load.
     storyLoadCount--;
   }
 
   function onStoryClick(details) {
+    console.log('ya clicked me! congrats!');
 
     var storyDetails = $('sd-' + details.id);
 
     // Wait a little time then show the story details.
+    // could we just chnage this to showStory.bind.[etc]..details.id) ?
     setTimeout(showStory.bind(this, details.id), 60);
 
     // Create and append the story. A visual change...
@@ -235,16 +236,27 @@ APP.Main = (function() {
     // this line is probly not doing anyhing
     var scaleString = 'scale(' + (1 - (scrollTopCapped / 300)) + ')';
 
-    header.style.height = (156 - scrollTopCapped) + 'px';
-    headerTitles.style.webkitTransform = scaleString;
-    headerTitles.style.transform = scaleString;
+    //  header.style.height = (156 - scrollTopCapped) + 'px';
 
     // Add a shadow to the header.
     // this looks like a read/write cycle
-    if (main.scrollTop > 70)
-      main.body.classList.add('raised');
-    else
-      main.body.classList.remove('raised');
+// take it out??
+      document.body.classList.add('raised');
+      // tried puttin these next three lines in here but they don't
+      // really solve the issue. before they were up above
+      // and formatted using the scalestring value.
+      header.style.height = 86 + 'px';
+      headerTitles.style.webkitTransform = 'scale(' + 0.77 + ')';
+      headerTitles.style.transform = 'scale(' + 0.77 + ')';
+      // when I added this line and the traansition for some reason it slowed down
+      main.style.paddingTop = 85 + 'px';
+   // } else {
+// would need some kind of way to figure out if scrolling up or down.
+     // document.body.classList.remove('raised');
+   //}
+  // need to somehow get header to get big again when you get to
+  // top but how to do that without looking at layout??
+  // also we are in the middle of many issues.
 
     // Check if we need to load the next batch of stories.
     // this is a layout check - read/write cycle?
@@ -253,7 +265,7 @@ APP.Main = (function() {
     if (main.scrollTop > loadThreshold) {
       loadStoryBatch();
     }
-  }, true);
+  });
 
   function loadStoryBatch() {
 
@@ -287,7 +299,7 @@ APP.Main = (function() {
         by: '...',
         time: 0
       });
-      overlay.appendChild(story);
+      main.appendChild(story);
 
       APP.Data.getStoryById(stories[i], onStoryData.bind(this, key));
     }
