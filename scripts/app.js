@@ -24,6 +24,7 @@ APP.Main = (function() {
   var main = $('main');
   var inDetails = false;
   var storyLoadCount = 0;
+  var lastScrollTop;
   var localeData = {
     data: {
       intl: {
@@ -229,40 +230,16 @@ APP.Main = (function() {
 
   main.addEventListener('scroll', function() {
 
-    console.log('scrolling');
-    var header = $('header');
-    var headerTitles = header.querySelector('.header__title-wrapper');
-    var scrollTopCapped = Math.min(70, main.scrollTop);
-    // this line is probly not doing anyhing
-    var scaleString = 'scale(' + (1 - (scrollTopCapped / 300)) + ')';
-
-    //  header.style.height = (156 - scrollTopCapped) + 'px';
-
-    // Add a shadow to the header.
-    // this looks like a read/write cycle
-// take it out??
+    // Adjust header style based on scroll direction
+    if (main.scrollTop > lastScrollTop) {
       document.body.classList.add('raised');
-      // tried puttin these next three lines in here but they don't
-      // really solve the issue. before they were up above
-      // and formatted using the scalestring value.
-      header.style.height = 86 + 'px';
-      headerTitles.style.webkitTransform = 'scale(' + 0.77 + ')';
-      headerTitles.style.transform = 'scale(' + 0.77 + ')';
-      // when I added this line and the traansition for some reason it slowed down
-      main.style.paddingTop = 85 + 'px';
-   // } else {
-// would need some kind of way to figure out if scrolling up or down.
-     // document.body.classList.remove('raised');
-   //}
-  // need to somehow get header to get big again when you get to
-  // top but how to do that without looking at layout??
-  // also we are in the middle of many issues.
+    } else {
+      document.body.classList.remove('raised');
+    }
 
-    // Check if we need to load the next batch of stories.
-    // this is a layout check - read/write cycle?
-    var loadThreshold = (main.scrollHeight - main.offsetHeight - 300);
+    lastScrollTop = main.scrollTop;
 
-    if (main.scrollTop > loadThreshold) {
+    if (main.scrollTop > 400) {
       loadStoryBatch();
     }
   });

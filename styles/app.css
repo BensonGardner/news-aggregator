@@ -68,8 +68,8 @@ a {
   padding: 0 0 0 72px;
   z-index: 1;
   position: fixed;
-  -webkit-transition: height 0.14s ease;
-  transition: height 0.14s ease;
+  -webkit-transition: height 0.14s;
+          transition: height 0.14s;
 }
 
 .header__title-wrapper {
@@ -77,8 +77,10 @@ a {
   bottom: 16px;
   -webkit-transform-origin: 0 100%;
           transform-origin: 0 100%;
-  -webkit-transition: transform 0.14s ease, -webkit-transform 0.14s ease;
-          transition: transform 0.14s ease, -webkit-transition 0.14s ease;
+  -webkit-transition: transform-scale 0.14s ease, -webkit-transform-scale 0.14s ease;
+          transition: transform-scale 0.14s ease, -webkit-transition-scale 0.14s ease;
+  -webkit-transition: -webkit-transform-origin: 0.14s ease; transform-origin: 0.14s ease;
+          transition: -webkit-transform-origin: 0.14s ease; transform-origin: 0.14s ease;
 }
 
 .header__title {
@@ -110,6 +112,12 @@ body.details-active .story {
 body.raised .header {
   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16),
       0px 2px 5px 0px rgba(0, 0, 0, 0.23);
+  height: 86px;
+}
+
+body.raised .header__title-wrapper {
+  -webkit-transform: scale(0.77);
+  transform: scale(0.77);
 }
 
 main {
@@ -124,6 +132,10 @@ main {
   z-index: 0;
   -webkit-transition: padding-top 0.14s ease;
   transition: padding-top 0.14s ease;
+}
+
+main .raised {
+  padding-top: 85px;
 }
 
 #overlay {
