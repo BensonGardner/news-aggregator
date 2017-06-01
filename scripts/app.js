@@ -89,7 +89,7 @@ APP.Main = (function() {
 
     // Wait a little time then show the story details.
     // could we just chnage this to showStory.bind.[etc]..details.id) ?
-    setTimeout(showStory.bind(this, details.id), 60);
+    requestAnimationFrame(showStory.bind(this, details.id));
 
     // Create and append the story. A visual change...
     // perhaps that should be in a requestAnimationFrame?
@@ -173,7 +173,7 @@ APP.Main = (function() {
 
     // Set up the next bit of the animation if there is more to do.
     if (Math.abs(left) > 0.5)
-      setTimeout(animate, 4);
+      requestAnimationFrame(animate);
     else
       left = 0;
 
@@ -207,7 +207,7 @@ APP.Main = (function() {
     // and they should be in a requestAnimationFrame
     // This is also the same thing as in the next function so we
     // can use the same callback if needed.
-    setTimeout(animate, 4);
+    requestAnimationFrame(animate);
   }
 
   function hideStory(id) {
@@ -225,7 +225,7 @@ APP.Main = (function() {
     // every few milliseconds. That's going to keep
     // it all tight. Or maybe we're doing visual changes
     // and they should be in a requestAnimationFrame
-    setTimeout(animate, 4);
+    requestAnimationFrame(animate);
   }
 
   main.addEventListener('scroll', function() {
