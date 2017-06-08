@@ -75,12 +75,6 @@ a {
 .header__title-wrapper {
   position: absolute;
   bottom: 16px;
-  -webkit-transform-origin: 0 100%;
-          transform-origin: 0 100%;
-  -webkit-transition: transform-scale 0.14s ease, -webkit-transform-scale 0.14s ease;
-          transition: transform-scale 0.14s ease, -webkit-transition-scale 0.14s ease;
-  -webkit-transition: -webkit-transform-origin: 0.14s ease; transform-origin: 0.14s ease;
-          transition: -webkit-transform-origin: 0.14s ease; transform-origin: 0.14s ease;
 }
 
 .header__title {
@@ -109,16 +103,10 @@ body.details-active .story {
   background: linear-gradient(to bottom, #FFF 0%, #FFF 100%);
 }
 
-body.raised .header {
-  box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.16),
-      0px 2px 5px 0px rgba(0, 0, 0, 0.23);
-  height: 86px;
+body.scrolled .header {
+  height: 91px;
 }
 
-body.raised .header__title-wrapper {
-  -webkit-transform: scale(0.77);
-  transform: scale(0.77);
-}
 
 main {
   max-height: 100%;
@@ -134,7 +122,7 @@ main {
   transition: padding-top 0.14s ease;
 }
 
-main .raised {
+main .scrolled {
   padding-top: 85px;
 }
 

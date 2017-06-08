@@ -70,6 +70,8 @@ APP.Main = (function() {
 
     // This seems odd. Surely we could just select the story
     // directly rather than looping through all of them.
+    // OHHHHHH wat that hint means is we should wait until someone
+    // clicks on a story to get all the stuff on the next page
 
     details.time *= 1000;
     var story = document.getElementById('s-' + key);
@@ -79,7 +81,7 @@ APP.Main = (function() {
    // story.classList.add('clickable');
 
     // Tick down. When zero we can batch in the next load.
-    storyLoadCount--;
+    storyLoadCount++;
   }
 
   function onStoryClick(details) {
@@ -87,8 +89,6 @@ APP.Main = (function() {
 
     var storyDetails = $('sd-' + details.id);
 
-    // Wait a little time then show the story details.
-    // could we just chnage this to showStory.bind.[etc]..details.id) ?
     requestAnimationFrame(showStory.bind(this, details.id));
 
     // Create and append the story. A visual change...
@@ -230,23 +230,24 @@ APP.Main = (function() {
 
   main.addEventListener('scroll', function() {
 
+
     // Adjust header style based on scroll direction
     if (main.scrollTop > lastScrollTop) {
-      document.body.classList.add('raised');
+      document.body.classList.add('scrolled');
     } else {
-      document.body.classList.remove('raised');
+      document.body.classList.remove('scrolled');
     }
 
     lastScrollTop = main.scrollTop;
 
-    if (main.scrollTop > 400) {
+    if (main.scrollTop > (storyLoadCount - 40) * 90) {
       loadStoryBatch();
     }
   });
 
   function loadStoryBatch() {
 
-    if (storyLoadCount > 0)
+    if (storyLoadCount % 100 != 0)
       return;
 
     // storyStart is being used to set the i, which is in turn used
@@ -259,9 +260,7 @@ APP.Main = (function() {
     // be able to just grab the stories from the data based on an index
     // that is set more simply.
 
-    storyLoadCount = 100;
-
-    for (var i = storyStart; i < (storyStart + 100); i++) {
+    for (var i = 0; i < 100; i++) {
 
       if (i >= stories.length)
         return;
@@ -280,8 +279,6 @@ APP.Main = (function() {
 
       APP.Data.getStoryById(stories[i], onStoryData.bind(this, key));
     }
-
-    storyStart += 100;
 
   }
 
