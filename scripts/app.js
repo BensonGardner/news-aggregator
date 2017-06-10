@@ -225,6 +225,37 @@ APP.Main = (function() {
     document.body.classList.remove('details-active');
     storyDetails.style.opacity = 0;
 
+    function animate () {
+
+      // Find out where it currently is.
+      var mainPosition = main.getBoundingClientRect();
+      // well, i tnink this is forcing layout....
+      var storyDetailsPosition = storyDetails.getBoundingClientRect();
+      var target = mainPosition.width + 100;
+
+      // Set the left value if we don't have one already.
+      if (left === null)
+        left = storyDetailsPosition.left;
+
+      // Now figure out where it needs to go.
+      left += (target - storyDetailsPosition.left) * 0.1;
+
+      // Set up the next bit of the animation if there is more to do.
+      if (Math.abs(left - target) > 0.5) {
+        requestAnimationFrame(animate);
+      } else {
+        left = target;
+        inDetails = false;
+      }
+
+      // And update the styles. Wait, is this a read-write cycle?
+      // I hope I don't trigger a forced synchronous layout!
+      // yup you are becuase we first read the layout values, then set the left value
+      // based on that, whihh will then erquire re-calculating of styles,
+      // which then reuiers more layout
+      storyDetails.style.left = left + 'px';
+    }
+
     requestAnimationFrame(animate);
   }
 
