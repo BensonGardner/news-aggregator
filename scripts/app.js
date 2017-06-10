@@ -24,6 +24,7 @@ APP.Main = (function() {
   var main = $('main');
   var inDetails = false;
   var storyLoadCount = 0;
+  var storyDetails;
   var lastScrollTop;
   var localeData = {
     data: {
@@ -182,7 +183,7 @@ APP.Main = (function() {
     document.body.classList.add('details-active');
     storyDetails.style.opacity = 1;
 
-    function animate () {
+/*     function animate (storyDetails, target) {
 
       // Find out where it currently is.
       var mainPosition = main.getBoundingClientRect();
@@ -211,7 +212,9 @@ APP.Main = (function() {
       storyDetails.style.left = left + 'px';
     }
 
-    requestAnimationFrame(animate);
+    requestAnimationFrame(function() {
+      animate(storyDetails, 0);
+    });*/
   }
 
   function hideStory(id) {
@@ -224,7 +227,7 @@ APP.Main = (function() {
 
     document.body.classList.remove('details-active');
     storyDetails.style.opacity = 0;
-
+/*
     function animate () {
 
       // Find out where it currently is.
@@ -256,7 +259,8 @@ APP.Main = (function() {
       storyDetails.style.left = left + 'px';
     }
 
-    requestAnimationFrame(animate);
+    requestAnimationFrame(animate);*/
+    inDetails = false;
   }
 
   main.addEventListener('scroll', function() {
