@@ -88,6 +88,9 @@ APP.Main = (function() {
     console.log('ya clicked me! congrats!');
 
     var storyDetails = $('sd-' + details.id);
+    console.log(details.id);
+    console.log('sd-' + details.id);
+    console.log(storyDetails);
 
     requestAnimationFrame(showStory.bind(this, details.id));
 
@@ -97,7 +100,8 @@ APP.Main = (function() {
     // need to make a new element every single time? I mean,
     // it inflates the DOM and I can only see one at once.
     if (!storyDetails) {
-
+      console.log(storyDetails + ' should be !');
+      console.log(details.url);
       if (details.url)
         details.urlobj = new URL(details.url);
 
@@ -113,9 +117,12 @@ APP.Main = (function() {
       });
 
       storyDetails = document.createElement('section');
+      console.log(storyDetails);
       storyDetails.setAttribute('id', 'sd-' + details.id);
+      console.log(storyDetails.id);
       storyDetails.classList.add('story-details');
       storyDetails.innerHTML = storyDetailsHtml;
+      console.log(storyDetails.innerHTML);
 
       document.body.appendChild(storyDetails);
 
@@ -150,10 +157,13 @@ APP.Main = (function() {
           comment.innerHTML = storyDetailsCommentTemplate(
               commentDetails,
               localeData);
+          console.log(storyDetails + ' first');
         });
+        console.log(storyDetails + ' second');
       }
+      console.log(storyDetails + ' third');
     }
-
+    console.log(storyDetails + ' fourth');
   }
 
   function animate () {
@@ -201,12 +211,6 @@ APP.Main = (function() {
     document.body.classList.add('details-active');
     storyDetails.style.opacity = 1;
 
-    // We want slick, right, so let's do a setTimeout
-    // every few milliseconds. That's going to keep
-    // it all tight. Or maybe we're doing visual changes
-    // and they should be in a requestAnimationFrame
-    // This is also the same thing as in the next function so we
-    // can use the same callback if needed.
     requestAnimationFrame(animate);
   }
 
@@ -221,10 +225,6 @@ APP.Main = (function() {
     document.body.classList.remove('details-active');
     storyDetails.style.opacity = 0;
 
-    // We want slick, right, so let's do a setTimeout
-    // every few milliseconds. That's going to keep
-    // it all tight. Or maybe we're doing visual changes
-    // and they should be in a requestAnimationFrame
     requestAnimationFrame(animate);
   }
 
