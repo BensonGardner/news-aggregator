@@ -24,6 +24,7 @@ APP.Main = (function() {
   var main = $('main');
   var inDetails = false;
   var storyLoadCount = 0;
+  var storySection = document.createElement('section');
   var storyDetails;
   var lastScrollTop;
   var localeData = {
@@ -69,12 +70,11 @@ APP.Main = (function() {
     // and the key. and yet when i do console.log , we do have a value
     // for both arguments. not sure why.
 
-    // This seems odd. Surely we could just select the story
-    // directly rather than looping through all of them.
     // OHHHHHH wat that hint means is we should wait until someone
     // clicks on a story to get all the stuff on the next page
 
     details.time *= 1000;
+    console.log(details);
     var story = document.getElementById('s-' + key);
     var html = storyTemplate(details);
     story.innerHTML = html;
@@ -88,7 +88,7 @@ APP.Main = (function() {
   function onStoryClick(details) {
     console.log('ya clicked me! congrats!');
 
-    var storyDetails = $('sd-' + details.id);
+    storyDetails = $('sd-' + details.id);
     console.log(details.id);
     console.log('sd-' + details.id);
     console.log(storyDetails);
@@ -117,7 +117,7 @@ APP.Main = (function() {
         by: '', text: 'Loading comment...'
       });
 
-      storyDetails = document.createElement('section');
+      storyDetails = storySection;
       console.log(storyDetails);
       storyDetails.setAttribute('id', 'sd-' + details.id);
       console.log(storyDetails.id);
@@ -182,39 +182,6 @@ APP.Main = (function() {
 
     document.body.classList.add('details-active');
     storyDetails.style.opacity = 1;
-
-/*     function animate (storyDetails, target) {
-
-      // Find out where it currently is.
-      var mainPosition = main.getBoundingClientRect();
-      // well, i tnink this is forcing layout....
-      var storyDetailsPosition = storyDetails.getBoundingClientRect();
-      var target = mainPosition.width + 100;
-
-      // Set the left value if we don't have one already.
-      if (left === null)
-        left = storyDetailsPosition.left;
-
-      // Now figure out where it needs to go.
-      left += (0 - storyDetailsPosition.left) * 0.1;
-
-      // Set up the next bit of the animation if there is more to do.
-      if (Math.abs(left) > 0.5)
-        requestAnimationFrame(animate);
-      else
-        left = 0;
-
-      // And update the styles. Wait, is this a read-write cycle?
-      // I hope I don't trigger a forced synchronous layout!
-      // yup you are becuase we first read the layout values, then set the left value
-      // based on that, whihh will then erquire re-calculating of styles,
-      // which then reuiers more layout
-      storyDetails.style.left = left + 'px';
-    }
-
-    requestAnimationFrame(function() {
-      animate(storyDetails, 0);
-    });*/
   }
 
   function hideStory(id) {
@@ -227,44 +194,10 @@ APP.Main = (function() {
 
     document.body.classList.remove('details-active');
     storyDetails.style.opacity = 0;
-/*
-    function animate () {
-
-      // Find out where it currently is.
-      var mainPosition = main.getBoundingClientRect();
-      // well, i tnink this is forcing layout....
-      var storyDetailsPosition = storyDetails.getBoundingClientRect();
-      var target = mainPosition.width + 100;
-
-      // Set the left value if we don't have one already.
-      if (left === null)
-        left = storyDetailsPosition.left;
-
-      // Now figure out where it needs to go.
-      left += (target - storyDetailsPosition.left) * 0.1;
-
-      // Set up the next bit of the animation if there is more to do.
-      if (Math.abs(left - target) > 0.5) {
-        requestAnimationFrame(animate);
-      } else {
-        left = target;
-        inDetails = false;
-      }
-
-      // And update the styles. Wait, is this a read-write cycle?
-      // I hope I don't trigger a forced synchronous layout!
-      // yup you are becuase we first read the layout values, then set the left value
-      // based on that, whihh will then erquire re-calculating of styles,
-      // which then reuiers more layout
-      storyDetails.style.left = left + 'px';
-    }
-
-    requestAnimationFrame(animate);*/
     inDetails = false;
   }
 
   main.addEventListener('scroll', function() {
-
 
     // Adjust header style based on scroll direction
     if (main.scrollTop > lastScrollTop) {
@@ -275,9 +208,10 @@ APP.Main = (function() {
 
     lastScrollTop = main.scrollTop;
 
-    if (main.scrollTop > (storyLoadCount - 40) * 90) {
-      loadStoryBatch();
-    }
+    requestAnimationFrame(loadStoryBatch);
+//    if (main.scrollTop > (storyLoadCount - 40) * 90) {
+  //    loadStoryBatch();
+    //}
   });
 
   function loadStoryBatch() {
