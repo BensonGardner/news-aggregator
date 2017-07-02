@@ -65,24 +65,21 @@ APP.Main = (function() {
    */
   function onStoryData (key, details) {
 
-    // I'm not sure how it's getting the details variable.
-    // it seems only to be passing the "this" value (thru the bind() operation)
-    // and the key. and yet when i do console.log , we do have a value
-    // for both arguments. not sure why.
-
     // OHHHHHH wat that hint means is we should wait until someone
     // clicks on a story to get all the stuff on the next page
 
-    details.time *= 1000;
-    console.log(details);
-    var story = document.getElementById('s-' + key);
-    var html = storyTemplate(details);
-    story.innerHTML = html;
-    story.addEventListener('click', onStoryClick.bind(this, details), true);
-   // story.classList.add('clickable');
+ // don't need??
+ //   details.time *= 1000;
+ // does this help?
+    requestAnimationFrame(function() {
 
-    // Tick down. When zero we can batch in the next load.
-    storyLoadCount++;
+      var story = document.getElementById('s-' + key);
+      var html = storyTemplate(details);
+      story.innerHTML = html;
+      story.addEventListener('click', onStoryClick.bind(this, details), true);
+
+      storyLoadCount++;
+    });
   }
 
   function onStoryClick(details) {
@@ -93,16 +90,12 @@ APP.Main = (function() {
     console.log('sd-' + details.id);
     console.log(storyDetails);
 
+//changing details.id to storyDetails may be what broke the click fcn
     requestAnimationFrame(showStory.bind(this, details.id));
 
     // Create and append the story. A visual change...
     // perhaps that should be in a requestAnimationFrame?
-    // And maybe, since they're all the same, I don't
-    // need to make a new element every single time? I mean,
-    // it inflates the DOM and I can only see one at once.
     if (!storyDetails) {
-      console.log(storyDetails + ' should be !');
-      console.log(details.url);
       if (details.url)
         details.urlobj = new URL(details.url);
 
@@ -139,6 +132,7 @@ APP.Main = (function() {
 
       if (typeof kids === 'undefined')
         return;
+     // this slowed down the site-- requestAnimationFrame(function() {
 
       for (var k = 0; k < kids.length; k++) {
 
@@ -206,6 +200,10 @@ APP.Main = (function() {
       document.body.classList.remove('scrolled');
     }
 
+    if (Math.max(main.scrollTop, lastScrollTop) > ((stories.length + 100) / 90)) {
+      requestAnimationFrame(loadStoryBatch);
+    }
+
     lastScrollTop = main.scrollTop;
 
     requestAnimationFrame(loadStoryBatch);
@@ -216,25 +214,24 @@ APP.Main = (function() {
 
   function loadStoryBatch() {
 
-    if (storyLoadCount % 100 != 0)
+    if (storyLoadCount % 60 != 0)
       return;
 
-    // storyStart is being used to set the i, which is in turn used
-    // to grab the right story from the data source.
+// When I had it load one at a time, and continually requestAnimatinoframes
+// to load more, it got clogged up in a hurry. Crashed.
+// Now it loads 60 at a time, after requesting an animationFrame but does that
+// seems to defeat the whole point of requestAnimationFrame?  I'm hitting 2 fps
+// at some of my worst frames. And, it's still possible to scroll so fast
+// you get ahead of the stories.
+// now it's weird bc occ'ly storyloadcount goes over 4500 but not usu.
+// seems like itis more likely if i scroll fast
 
-    // storyLoadCount is set to 100 when we load a new batch like this,
-    // then ticked down in that loop elsewhere in the app.js. However,
-    // it's possible that we don't need to tick them like that, which
-    // would mean we could get rid of the storyLoadCount var. We might
-    // be able to just grab the stories from the data based on an index
-    // that is set more simply.
-
-    for (var i = 0; i < 100; i++) {
-
-      if (i >= stories.length)
+    for (var i = 0; i < 60; i++) {
+      console.log(storyLoadCount);
+      if (storyLoadCount >= stories.length)
         return;
 
-      var key = String(stories[i]);
+      var key = String(stories[storyLoadCount]);
       var story = document.createElement('div');
       story.setAttribute('id', 's-' + key);
       story.classList.add('story');
@@ -245,16 +242,16 @@ APP.Main = (function() {
         time: 0
       });
       main.appendChild(story);
-
-      APP.Data.getStoryById(stories[i], onStoryData.bind(this, key));
+      storyLoadCount++;
+      APP.Data.getStoryById(stories[storyLoadCount], onStoryData.bind(this, key));
     }
-
+    requestAnimationFrame(loadStoryBatch);
   }
 
   // Bootstrap in the stories.
   APP.Data.getTopStories(function(data) {
     stories = data;
-    loadStoryBatch();
+    requestAnimationFrame(loadStoryBatch);
     main.classList.remove('loading');
   });
 
