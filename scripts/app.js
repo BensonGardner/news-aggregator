@@ -20,6 +20,7 @@ APP.Main = (function() {
   var $ = document.querySelector.bind(document);
 
   var stories = null;
+  var story;
   var storyStart = 0;
   var main = $('main');
   var inDetails = false;
@@ -57,34 +58,36 @@ APP.Main = (function() {
   var storyDetailsCommentTemplate =
       Handlebars.compile(tmplStoryDetailsComment);
 
-  function createStory() {
-    requestAnimationFrame(function(){
-       // don't need this??
-  //   details.time *= 1000;
-      var story = document.createElement('div');
-      var key = String(stories[storyLoadCount]);
-      story.setAttribute('id', 's-' + key);
-      story.classList.add('story');
-      story.innerHTML = storyTemplate({
-        title: '...',
-        score: '-',
-        by: '...',
-        time: 0
-    });
-    loadStory();
-    storyLoadCount++;
-  });
+  var loadStory = function() {
+    console.log("loading man");
+    console.log(storyLoadCount);
 
-  function loadInitialStories() {
-    for (i = 0; i < 15; i++) {
-      createStory();
-    }
-  }
+    if (storyLoadCount >= stories.length)
+      return;
+    APP.Data.getStoryById(stories[storyLoadCount], shoveStoryIn.bind(this, storyLoadCount));
+  };
 
-  function loadStoriesInBackground() {
-    for (i = 0; i < 200; i++) {
-      createStory();
+  function createStories(amount) {
+    for (i = 0; i < amount; i++) {
+      console.log("Creating stories, dude");
+      requestAnimationFrame(function(){
+        console.log("creating the loaders");
+           // don't need this??
+      //   details.time *= 1000;
+        story = document.createElement('div');
+        story.setAttribute('id', 's-' + storyLoadCount);
+        story.classList.add('story');
+        story.innerHTML = storyTemplate({
+          title: '...',
+          score: '-',
+          by: '...',
+          time: 0
+        });
+        requestAnimationFrame(loadStory.bind(this));
+        storyLoadCount++;
+      });
     }
+    console.log("done with the loaders");
   }
 
   /**
@@ -95,10 +98,11 @@ APP.Main = (function() {
    */
 
   function shoveStoryIn (key, details) {
-
+    console.log("shoving, dude");
     // OHHHHHH wat that hint means is we should wait until someone
     // clicks on a story to get all the stuff on the next page
-
+    console.log(storyLoadCount);
+    console.log(id + " is the id and the details is " + details);
     requestAnimationFrame(function(){
       var html = storyTemplate(details);
       story.innerHTML = html;
@@ -140,7 +144,6 @@ APP.Main = (function() {
       console.log(storyDetails.id);
       storyDetails.classList.add('story-details');
       storyDetails.innerHTML = storyDetailsHtml;
-      console.log(storyDetails.innerHTML);
 
       document.body.appendChild(storyDetails);
 
@@ -225,7 +228,7 @@ APP.Main = (function() {
     }
 
     if (Math.max(main.scrollTop, lastScrollTop) > ((stories.length + 100) / 90)) {
-      loadStoriesInBackground();
+      createStories(200);
     }
 
     lastScrollTop = main.scrollTop;
@@ -237,7 +240,7 @@ APP.Main = (function() {
   // Bootstrap in the stories.
   APP.Data.getTopStories(function(data) {
     stories = data;
-    loadInitialStories();
+    createStories(15);
     main.classList.remove('loading');
   });
 
