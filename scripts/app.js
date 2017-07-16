@@ -57,50 +57,27 @@ APP.Main = (function() {
   var storyDetailsCommentTemplate =
       Handlebars.compile(tmplStoryDetailsComment);
 
-  function createStory {
-    requestAnimationFrame(function(){
-       // don't need this??
-  //   details.time *= 1000;
-      var story = document.createElement('div');
-      story.setAttribute('id', 's-' + key);
-      story.classList.add('story');
-      story.innerHTML = storyTemplate({
-        title: '...',
-        score: '-',
-        by: '...',
-        time: 0
-    });
-    loadStory(key)
-  }
-
   /**
    * As every single story arrives in shove its
    * content in at that exact moment. Feels like something
    * that should really be handled more delicately, and
    * probably in a requestAnimationFrame callback.
    */
-
-  function shoveStoryIn (key, details) {
+  function onStoryData (key, details) {
 
     // OHHHHHH wat that hint means is we should wait until someone
     // clicks on a story to get all the stuff on the next page
 
-    requestAnimationFrame(function(){
-       // don't need this??
+ // don't need??
  //   details.time *= 1000;
-      var story = document.createElement('div');
-      story.setAttribute('id', 's-' + key);
-      story.classList.add('story');
-      story.innerHTML = storyTemplate({
-        title: '...',
-        score: '-',
-        by: '...',
-        time: 0
-      });
+ // does this help?
+    requestAnimationFrame(function() {
+
+      var story = document.getElementById('s-' + key);
       var html = storyTemplate(details);
       story.innerHTML = html;
       story.addEventListener('click', onStoryClick.bind(this, details), true);
-      main.appendChild(story);
+
       storyLoadCount++;
     });
   }
@@ -224,23 +201,57 @@ APP.Main = (function() {
     }
 
     if (Math.max(main.scrollTop, lastScrollTop) > ((stories.length + 100) / 90)) {
-      requestAnimationFrame(createStory);
+      requestAnimationFrame(loadStoryBatch);
     }
 
     lastScrollTop = main.scrollTop;
 
-    requestAnimationFrame(createStory);
+    requestAnimationFrame(loadStoryBatch);
 //    if (main.scrollTop > (storyLoadCount - 40) * 90) {
-  //    createStory();
+  //    loadStoryBatch();
     //}
   });
 
+  function loadStoryBatch() {
 
+    if (storyLoadCount % 60 != 0)
+      return;
+
+// When I had it load one at a time, and continually requestAnimatinoframes
+// to load more, it got clogged up in a hurry. Crashed.
+// Now it loads 60 at a time, after requesting an animationFrame but does that
+// seems to defeat the whole point of requestAnimationFrame?  I'm hitting 2 fps
+// at some of my worst frames. And, it's still possible to scroll so fast
+// you get ahead of the stories.
+// now it's weird bc occ'ly storyloadcount goes over 4500 but not usu.
+// seems like itis more likely if i scroll fast
+
+    for (var i = 0; i < 60; i++) {
+      console.log(storyLoadCount);
+      if (storyLoadCount >= stories.length)
+        return;
+
+      var key = String(stories[storyLoadCount]);
+      var story = document.createElement('div');
+      story.setAttribute('id', 's-' + key);
+      story.classList.add('story');
+      story.innerHTML = storyTemplate({
+        title: '...',
+        score: '-',
+        by: '...',
+        time: 0
+      });
+      main.appendChild(story);
+      storyLoadCount++;
+      APP.Data.getStoryById(stories[storyLoadCount], onStoryData.bind(this, key));
+    }
+    requestAnimationFrame(loadStoryBatch);
+  }
 
   // Bootstrap in the stories.
   APP.Data.getTopStories(function(data) {
     stories = data;
-    requestAnimationFrame(createStory);
+    requestAnimationFrame(loadStoryBatch);
     main.classList.remove('loading');
   });
 
