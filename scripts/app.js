@@ -57,12 +57,11 @@ APP.Main = (function() {
   var storyDetailsCommentTemplate =
       Handlebars.compile(tmplStoryDetailsComment);
 
-  function createStory() {
+  function createStory {
     requestAnimationFrame(function(){
        // don't need this??
   //   details.time *= 1000;
       var story = document.createElement('div');
-      var key = String(stories[storyLoadCount]);
       story.setAttribute('id', 's-' + key);
       story.classList.add('story');
       story.innerHTML = storyTemplate({
@@ -71,20 +70,7 @@ APP.Main = (function() {
         by: '...',
         time: 0
     });
-    loadStory();
-    storyLoadCount++;
-  });
-
-  function loadInitialStories() {
-    for (i = 0; i < 15; i++) {
-      createStory();
-    }
-  }
-
-  function loadStoriesInBackground() {
-    for (i = 0; i < 200; i++) {
-      createStory();
-    }
+    loadStory(key)
   }
 
   /**
@@ -100,14 +86,27 @@ APP.Main = (function() {
     // clicks on a story to get all the stuff on the next page
 
     requestAnimationFrame(function(){
+       // don't need this??
+ //   details.time *= 1000;
+      var story = document.createElement('div');
+      story.setAttribute('id', 's-' + key);
+      story.classList.add('story');
+      story.innerHTML = storyTemplate({
+        title: '...',
+        score: '-',
+        by: '...',
+        time: 0
+      });
       var html = storyTemplate(details);
       story.innerHTML = html;
       story.addEventListener('click', onStoryClick.bind(this, details), true);
       main.appendChild(story);
+      storyLoadCount++;
     });
   }
 
   function onStoryClick(details) {
+    console.log('ya clicked me! congrats!');
 
     storyDetails = $('sd-' + details.id);
     console.log(details.id);
@@ -156,6 +155,7 @@ APP.Main = (function() {
 
       if (typeof kids === 'undefined')
         return;
+     // this slowed down the site-- requestAnimationFrame(function() {
 
       for (var k = 0; k < kids.length; k++) {
 
@@ -199,7 +199,6 @@ APP.Main = (function() {
 
     document.body.classList.add('details-active');
     storyDetails.style.opacity = 1;
-
   }
 
   function hideStory(id) {
@@ -225,11 +224,15 @@ APP.Main = (function() {
     }
 
     if (Math.max(main.scrollTop, lastScrollTop) > ((stories.length + 100) / 90)) {
-      loadStoriesInBackground();
+      requestAnimationFrame(createStory);
     }
 
     lastScrollTop = main.scrollTop;
 
+    requestAnimationFrame(createStory);
+//    if (main.scrollTop > (storyLoadCount - 40) * 90) {
+  //    createStory();
+    //}
   });
 
 
@@ -237,7 +240,7 @@ APP.Main = (function() {
   // Bootstrap in the stories.
   APP.Data.getTopStories(function(data) {
     stories = data;
-    loadInitialStories();
+    requestAnimationFrame(createStory);
     main.classList.remove('loading');
   });
 
