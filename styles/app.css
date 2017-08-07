@@ -66,7 +66,6 @@ a {
   font-size: 40px;
   font-weight: 400;
   padding: 0 0 0 72px;
-  z-index: 1;
   position: fixed;
   -webkit-transition: height 0.14s;
           transition: height 0.14s;
@@ -99,12 +98,15 @@ body.details-active .story__score {
   opacity: 0 !important;
 }*/
 
-body.details-active .story {
+/*body.details-active .story {
   background: linear-gradient(to bottom, #FFF 0%, #FFF 100%);
-}
+}*/
 
 body.details-active .story-details {
   left: 0;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
 }
 
 body.scrolled .header {
@@ -211,9 +213,6 @@ main.loading {
 }
 
 .story-details {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
   -webkit-flex-direction: column;
       -ms-flex-direction: column;
           flex-direction: column;
@@ -230,6 +229,7 @@ main.loading {
       -webkit-align-content: stretch;
           align-content: stretch;
 
+  display: none;
   opacity: 0;
   position: fixed;
   top: 0;
@@ -237,7 +237,7 @@ main.loading {
   width: 100%;
   height: 100%;
   background: white;
-  z-index: 2;
+  z-index: 1;
   box-shadow:
       0px 2px 5px 0px rgba(0, 0, 0, 0.06),
       0px 2px 5px 0px rgba(0, 0, 0, 0.08),
@@ -352,7 +352,6 @@ footer {
   text-align: center;
   line-height: 40px;
   position: relative;
-  z-index: 2;
 }
 
 footer a {
