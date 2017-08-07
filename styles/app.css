@@ -165,8 +165,7 @@ main.loading {
 
 .story {
   padding: 16px 16px 16px 72px;
-  background: #FFF;
-  background: linear-gradient(to bottom, #FFF 0%,#F4F4F4 100%);
+  background: white;
   position: relative;
   min-height: 90px;
   cursor: pointer;
