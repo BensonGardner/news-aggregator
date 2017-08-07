@@ -180,11 +180,10 @@ APP.Main = (function() {
     if (!inDetails)
       return;
 
-    var left = 0;
-
     document.body.classList.remove('details-active');
     storyDetails.style.opacity = 0;
     inDetails = false;
+    storyDetails.setTimeOut(function(){storyDetails.style.display = "none"}, 400);
   }
 
   main.addEventListener('scroll', function() {

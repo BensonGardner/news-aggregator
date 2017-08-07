@@ -67,6 +67,7 @@ a {
   font-weight: 400;
   padding: 0 0 0 72px;
   position: fixed;
+  z-index: 1;
   -webkit-transition: height 0.14s;
           transition: height 0.14s;
 }
@@ -103,10 +104,10 @@ body.details-active .story__score {
 }*/
 
 body.details-active .story-details {
-  left: 0;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  left: 0;
 }
 
 body.scrolled .header {
@@ -229,7 +230,6 @@ main.loading {
       -webkit-align-content: stretch;
           align-content: stretch;
 
-  display: none;
   opacity: 0;
   position: fixed;
   top: 0;
