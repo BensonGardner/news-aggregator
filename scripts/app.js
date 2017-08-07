@@ -65,9 +65,6 @@ APP.Main = (function() {
    */
   function onStoryData (key, details) {
 
-    // OHHHHHH wat that hint means is we should wait until someone
-    // clicks on a story to get all the stuff on the next page
-
  // don't need??
  //   details.time *= 1000;
  // does this help?
@@ -183,7 +180,6 @@ APP.Main = (function() {
     if (!inDetails)
       return;
 
-    var storyDetails = $('#sd-' + id);
     var left = 0;
 
     document.body.classList.remove('details-active');
