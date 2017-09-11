@@ -59,6 +59,7 @@ a {
 }
 
 .header {
+  will-change: transform;
   width: 100%;
   height: 156px;
   background: #FF8F00;
@@ -344,6 +345,7 @@ main.loading {
 }
 
 footer {
+  will-change: transform;
   font-size: 13px;
   height: 40px;
   background: #ececec;

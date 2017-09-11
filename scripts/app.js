@@ -20,6 +20,7 @@ APP.Main = (function() {
   var $ = document.querySelector.bind(document);
 
   var stories = null;
+  var batch = 15;
   var storyStart = 0;
   var main = $('main');
   var inDetails = false;
@@ -27,6 +28,8 @@ APP.Main = (function() {
   var storySection = document.createElement('section');
   var storyDetails;
   var lastScrollTop;
+  var earlierScrollTop;
+  var ticking = false;
   var localeData = {
     data: {
       intl: {
@@ -65,29 +68,24 @@ APP.Main = (function() {
    */
   function onStoryData (key, details) {
 
- // don't need??
- //   details.time *= 1000;
- // does this help?
-    requestAnimationFrame(function() {
+//    requestAnimationFrame(function() {
 
       var story = document.getElementById('s-' + key);
       var html = storyTemplate(details);
       story.innerHTML = html;
       story.addEventListener('click', onStoryClick.bind(this, details), true);
 
-      storyLoadCount++;
-    });
+//      storyLoadCount++;
+  //  });
   }
 
   function onStoryClick(details) {
-    console.log('ya clicked me! congrats!');
 
     storyDetails = $('sd-' + details.id);
     console.log(details.id);
     console.log('sd-' + details.id);
     console.log(storyDetails);
 
-//changing details.id to storyDetails may be what broke the click fcn
     requestAnimationFrame(showStory.bind(this, details.id));
 
     // Create and append the story. A visual change...
@@ -186,42 +184,67 @@ APP.Main = (function() {
     storyDetails.setTimeOut(function(){storyDetails.style.display = "none"}, 400);
   }
 
-  main.addEventListener('scroll', function() {
+  function requestTick() {
+
+    if(!ticking) {
+      requestAnimationFrame(scrollUpdate);
+    }
+
+    // Set ticking to true so we don't request more Animation Frames than
+    // we can handle.
+
+    ticking = true;
+  }
+
+  function scrollUpdate() {
+
+    // Reset ticking to start the updating process again.
+    ticking = false;
 
     // Adjust header style based on scroll direction
-    if (main.scrollTop > lastScrollTop) {
+    if (lastScrollTop > earlierScrollTop) {
       document.body.classList.add('scrolled');
     } else {
       document.body.classList.remove('scrolled');
     }
 
+    earlierScrollTop = lastScrollTop;
+
+    //load a story
+    loadStory();
+  }
+
+  main.addEventListener('scroll', function() {
+
+    lastScrollTop = main.scrollTop;
+    requestTick();
+
+/*
     if (Math.max(main.scrollTop, lastScrollTop) > ((stories.length + 100) / 90)) {
       requestAnimationFrame(loadStoryBatch);
     }
-
-    lastScrollTop = main.scrollTop;
-
-    requestAnimationFrame(loadStoryBatch);
+*/
+/*    requestAnimationFrame(loadStoryBatch); */
 //    if (main.scrollTop > (storyLoadCount - 40) * 90) {
   //    loadStoryBatch();
     //}
   });
 
-  function loadStoryBatch() {
+  function loadStory() {
 
-    if (storyLoadCount % 60 != 0)
-      return;
+ /*   if (storyLoadCount % 60 != 0)
+      return;*/
 
-// When I had it load one at a time, and continually requestAnimatinoframes
+// When I had it load one at a time, and continually requestAnimationframe
 // to load more, it got clogged up in a hurry. Crashed.
 // Now it loads 60 at a time, after requesting an animationFrame but does that
 // seems to defeat the whole point of requestAnimationFrame?  I'm hitting 2 fps
 // at some of my worst frames. And, it's still possible to scroll so fast
 // you get ahead of the stories.
-// now it's weird bc occ'ly storyloadcount goes over 4500 but not usu.
-// seems like itis more likely if i scroll fast
+// now it's weird bc occasionally storyloadcount goes over 4500 but not usually.
+// seems like it is more likely when i scroll fast
 
-    for (var i = 0; i < 60; i++) {
+//    for (var i = 0; i < 60; i++) {
       console.log(storyLoadCount);
       if (storyLoadCount >= stories.length)
         return;
@@ -239,14 +262,19 @@ APP.Main = (function() {
       main.appendChild(story);
       storyLoadCount++;
       APP.Data.getStoryById(stories[storyLoadCount], onStoryData.bind(this, key));
+//    }
+    if (storyLoadCount === batch) {
+      batch+=35;
+      return;
+    } else {
+      requestAnimationFrame(loadStory);
     }
-    requestAnimationFrame(loadStoryBatch);
   }
 
   // Bootstrap in the stories.
   APP.Data.getTopStories(function(data) {
     stories = data;
-    requestAnimationFrame(loadStoryBatch);
+    requestAnimationFrame(loadStory);
     main.classList.remove('loading');
   });
 
